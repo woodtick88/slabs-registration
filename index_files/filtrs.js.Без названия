@@ -1,0 +1,337 @@
+            function resetInput()
+            {
+                $('.form_input.view2 input').on('blur change input', function()
+                {
+                    var $this = $(this),
+                        value = $this.val();
+                    if (value == '')
+                    {
+                        $this.closest('.form_input.view2').removeClass('show');
+                    }
+                    else
+                    {
+                        $this.closest('.form_input.view2').addClass('show');
+                    }
+                });
+                $('.form_input.view2 .js-reset-btn').on('click', function(event)
+                {
+                    $(this).closest('.form_input.view2').removeClass('show').find('input').val('');
+                });
+            }
+
+            function num2str(n, text_forms)
+            {
+                n = Math.abs(n) % 100;
+                var n1 = n % 10;
+                if (n > 10 && n < 20)
+                {
+                    return text_forms[2];
+                }
+                if (n1 > 1 && n1 < 5)
+                {
+                    return text_forms[1];
+                }
+                if (n1 == 1)
+                {
+                    return text_forms[0];
+                }
+                return text_forms[2];
+            }
+            function calc()
+            {
+                var $item = $('.basket_wr_item'),
+                    tr = $('.filter_order_table tbody tr'),
+                    sum = 0,
+                    count = 0,
+                    $ariaTotal = 0,
+                    summ,
+                    discount = 0,
+                    countt;
+                $item.each(function(index, el)
+                {
+                    var $aria = $(el).find('.filter_order_table tbody tr'),
+                        $ariaQt = 0;
+                    $aria.each(function()
+                    {
+                        console.log($ariaQt);
+                        $ariaQt += +($(this).find('.aria_item').text());
+                        console.log($ariaQt);
+                    });
+                    console.log($ariaQt);
+                    $(el).find('.block_area>span').text($ariaQt.toFixed(2));
+                })
+                $('.basket_wr_item').each(function()
+                {
+                    var $aria = $(this).find('.block_area>span').text();
+                    $ariaTotal += +($aria);
+                })
+                $('.total_area>span').text($ariaTotal.toFixed(2));
+                tr.each(function()
+                {
+                    if (!$(this).find('input:checkbox').prop('checked'))
+                    {
+                        return
+                    }
+                    var checkbox = $(this).find('input:checkbox').prop('checked'),
+                        price = $(this).find('td.table_price span').text().replace(/\s/g, '');
+                    sum += parseFloat(price);
+                    count += 1;
+                });
+                if(Number($('.filter_order_price_it').data('discount'))>0)
+                    discount=Number($('.filter_order_price_it').data('discount'));
+                summ = sum-(sum*discount/100);
+                summ = summ.toFixed(2) + '';
+                countt = count + '';
+                // .replace(/[,]+/g, '.') -- for del , and add .
+                $('body .filter_order_price_it').text(summ.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 '));
+                $('body .filter_order_choose_it').text(countt.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 '));
+                var val = num2str(count, ['слеб', 'слеба', 'слебов']),
+                    vals = num2str(count, ['Выбран', 'Выбрано', 'Выбрано']);
+                $('body .filter_order_choose_txt').text(val);
+                $('body .filter_order_choose_v').text(vals);
+                CheckTb();
+            }
+
+
+            function tableCheck()
+            {
+                $('.filter_order_table .main_check').on('click change input', function(event)
+                {
+                    if ($(this).prop('checked'))
+                    {
+                        $(this).closest('.filter_order_table').find('tbody tr td input:checkbox').prop('checked', true).trigger('refresh');
+                    }
+                    else if($(this).prop('checked')===false)
+                    {
+                        $(this).closest('.filter_order_table').find('tbody tr td input:checkbox').prop("checked", false).trigger('refresh');
+                    }
+                    calc();
+					change_cart($(this));
+                });
+                $('.filter_order_table').find('tbody tr td:first-child input').on('click change input', function(event)
+                {
+                    calc();
+					change_cart($(this));
+                });
+            }
+
+            function popupAddBask()
+            {
+                $('body').on('click', '.js-add-basket', function()
+                {
+                    var $checkbox = $("#" + $(this).attr('data-checked-id'));
+                    if ($(this).hasClass('check'))
+                    {
+                        $(this).removeClass('check');
+                        $checkbox.prop('checked', false).trigger('refresh');
+						delete_sleb($checkbox.val());
+                    }
+                    else
+                    {
+                        $(this).addClass('check');
+                        $checkbox.prop('checked', true).trigger('refresh');
+						add_sleb($checkbox.val());
+						ym(54180595, 'reachGoal', 'slab_add_full');
+                    }
+                    calc();
+                });
+            }
+
+            // filter start
+            function filterCheck()
+            {
+                $('body .filmain_check').on('click change input', function(event)
+                {
+                    $(this).toggleClass('checked');
+                    if ($(this).hasClass('checked'))
+                    {
+                        $(this).closest('.form_checkbox').find('input:checkbox').addClass('checked').prop('checked', true).trigger('refresh');
+                        $(this).closest('.form_row').addClass('show');
+                    }
+                    else
+                    {
+                        $(this).closest('.form_checkbox').find('input:checkbox').removeClass('checked').prop('checked', false).trigger('refresh');
+                        $(this).closest('.form_row').removeClass('show');
+                    }
+                    filterCheckLength($(this), $(this).closest('.form_checkbox').find("input:checkbox:checked").length - 1);
+                });
+                $('body .form_row .form_checkbox input:checkbox:not(.filmain_check)').on('click change input', function(event)
+                {
+                    if (!$(this).hasClass('checked'))
+                    {
+                        $(this).toggleClass('checked').prop('checked', true).trigger('refresh');
+                        $(this).closest('.form_row').addClass('show');
+                    }
+                    else
+                    {
+                        $(this).removeClass('checked').prop('checked', false).trigger('refresh');
+                        if ($(this).closest('.form_checkbox').find('input:checkbox:checked').length <= 0)
+                        {
+                            $(this).closest('.form_row').removeClass('show');
+                        }
+                        if ($(this).not(':checked') && $(this).closest('.form_checkbox').find('.filmain_check').hasClass('checked'))
+                        {
+                            $(this).closest('.form_checkbox').find('.filmain_check').removeClass('checked').prop('checked', false).trigger('refresh');
+                            filterCheckLength($(this), $(this).closest('.form_checkbox').find("input:checkbox:checked").length);
+                        }
+                    }
+                    filterCheckLength($(this), $(this).closest('.form_checkbox').find("input:checkbox:checked").length);
+                });
+            }
+
+
+            function filterCheckLength(thats, check)
+            {
+                var $allCheck = check;
+                thats.closest('.form_row').find('.form_title .form_numb').text($allCheck);
+            }
+
+            function filterCheckReset()
+            {
+                $('.filter_form .js-reset-btn').on('click', function(event)
+                {
+                    $(this).closest('.form_row').removeClass('show').find('.form_checkbox input:checkbox').removeClass('checked').prop('checked', false).trigger('refresh');
+                });
+            }
+
+            function filterFormReset()
+            {
+                $('.filter_form button[type="reset"]').on('click', function(event)
+                {
+                    $('.filter_form').find('input:checkbox').removeClass('checked').prop('checked', false).trigger('refresh');
+                    $('.filter_form').find('.form_row').removeClass('show');
+                    $('.filter_form').find('.form_input.view2').removeClass('show');
+                    $('.form_numb').text('');
+                    $(this).closest('form').get(0).reset();
+                    $('.filter_form').find('select').trigger('refresh');
+                });
+            }
+            function delSort()
+            {
+                $('body').on('click', '.sort_data_box', function(event)
+                {
+                    var $boxID = $(this).attr('data-id');
+                    $('body').find('[id=' + $boxID + ']').removeClass('checked').prop('checked', false).trigger('refresh');
+                    $('body').find('[id=' + $boxID + ']').closest('.form_checkbox').find('.filmain_check').removeClass('checked').prop('checked', false).trigger('refresh');
+                    $(this).remove();
+                    filterCheckLength($('body').find('[id=' + $boxID + ']').closest('.form_checkbox'), $('body').find('[id=' + $boxID + ']').closest('.form_checkbox').find("input:checkbox:checked:not(.filmain_check)").length);
+                    checkSort();
+					ajax_filtr();
+                });
+            }
+
+            function checkSort()
+            {
+                $('.sort_data_item').each(function()
+                {
+                    if (!$(this).find('.sort_data_box').length)
+                    {
+                        $(this).remove();
+                    }
+                });
+            }
+
+            // closeTr start
+            function closeTr(){
+                $('.js-close-tr').on('click', function(event) {
+                    event.preventDefault();
+                    $(this).closest('tr').addClass('hideTr').animate({opacity: 0},500, function() {
+                        $(this).remove();
+                        CheckTb();
+                        calc();
+                    }); 
+                });
+            }
+            // closeTr end
+
+            function CheckTb(){
+                $('.filter_order_table.basket_table').each(function(){
+                    if($(this).find('tbody tr').length < 1){
+                        if(!$(this).hasClass('tableEmpty')){
+                            $(this).hide().addClass('tableEmpty').closest('.filter_table_wrap').append('<div class="emptyText">Таблица пуста.</div>')
+                            $(this).closest('.basket_wr_item').addClass('wrEmpty').hide().remove();  
+                        }
+                    }
+                })
+                setTimeout(function(){
+                    if($.trim($('body .basket_wrap').html()) !== '' ){
+                        // console.log(22)
+                    }
+                    else{
+                        $('body .basket_wrap').append('<div class="emptyText">Корзина пуста.</div>')
+                        // console.log(33)
+                    }
+                    
+                },1000)
+            }
+			
+			function start_filtrs()
+			{
+				resetInput();
+				calc();
+				tableCheck();
+				popupAddBask();
+				filterCheck();
+				filterCheckReset();
+				filterFormReset();
+				delSort();
+                closeTr();
+			}
+			
+			start_filtrs();
+            // filter end
+			
+			function change_cart(elm)
+			{
+				param =  new Array();
+				var formid='sleb_params';
+				param= new Array();
+				if(document.getElementById(formid))
+				{
+					str = $("#"+formid).serialize();
+					lines = str.split("&");
+					for ( i = 0; i < lines.length; i++ ) 
+					{
+						data = lines[i].split("=");
+						param[data[0]]=data[1];
+//						alert(data[0]+' - '+data[1]);
+					}
+				}
+				param['click_elm']=elm.attr('name');
+				param['click_status']=(elm.prop("checked")?1:0);
+				param['act']='change_cart';
+			//	var order=Number($('input[name=filtr_order]:checked').val());
+			//	param['order']=order;
+				// Create new JsHttpRequest object.
+				var req = new JsHttpRequest();
+				// Code automatically called on load finishing.
+				req.onreadystatechange = function() 
+				{
+					if (req.readyState == 4) {
+						if(req.responseText)
+						{
+							//изменение мини-корзины
+                            var slabsName=req.responseJS.slab_name;
+                            var slabsType=req.responseJS.slab_type;
+                            var slabsPrice=req.responseJS.slab_price;
+                            var slabsId=req.responseJS.slab_id;
+							$('.basket_info').html(req.responseText);
+							ym(54180595, 'reachGoal', 'slab_add_list');
+							for(i=0; i<slabsName.length; i++) {
+                                fbq('track', 'AddToCart', {
+                                    content_name: slabsName[i], //Название контента
+                                    content_category: slabsType[i], //[Тип камня]
+                                    content_ids: slabsId[i],   //Уникальный идентификатор
+                                    content_type: 'product',   //Тип контента (например, страница товара)
+                                    value: slabsPrice[i],               //Стоимость конверсии
+                                    currency: 'RUB'            //Валюта
+                                });
+                            }
+						}
+					}
+				}
+				// Prepare request object (automatically choose GET or POST).
+				req.open('post', '/ajax.php', true);
+				// Send data to backend.
+				req.send( {param:param} );
+			};

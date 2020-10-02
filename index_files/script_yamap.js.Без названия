@@ -1,0 +1,120 @@
+/**
+**	Yandex Map
+**/
+if($('body .ymap').length){
+
+	ymaps.ready(init);
+
+	function addMarkers(markers, markerArr, myCollection, myMap){
+
+		for (var i = 0; i <= markers.length - 1; i++) {
+
+			var marker = new ymaps.Placemark(markers[i].geometry.coordinates, 
+			{
+	            hintContent: markers[i].balloon.hintContent,
+	            balloonContentHeader: markers[i].balloon.balloonContentHeader,
+	            balloonContentBody: markers[i].balloon.balloonContentBody,
+	            balloonContentFooter: markers[i].balloon.balloonContentFooter
+	        },
+			{
+	            // Опции.
+	            // Необходимо указать данный тип макета.
+	            iconLayout: 'default#imageWithContent',
+	            // Своё изображение иконки метки.
+	            iconImageHref: '/images/icons/marker-icon.svg',
+	            // Размеры метки.
+	            iconImageSize: [32, 40],
+	            // Смещение левого верхнего угла иконки относительно
+	            // её "ножки" (точки привязки).
+	            iconImageOffset: [-15, -41]
+	        });
+			
+	        marker.markerId = markers[i].id;
+			markerArr.push(marker);
+
+			myCollection.add(marker);
+			myMap.geoObjects.add(myCollection);
+
+			// При наведении на маркер меняется маркер 
+			marker.events
+				.add('mouseenter', function (e) {
+					e.get('target').options.set('iconImageHref', '/images/icons/marker-hover-icon.svg');
+		        }).add('mouseleave', function (e) {
+		            e.get('target').options.set('iconImageHref', '/images/icons/marker-icon.svg');
+		    });
+
+			marker.events.add('click', function (e) {
+
+	            // Ссылку на объект, вызвавший событие,
+	            // можно получить из поля 'target'.
+	            for (var n = markerArr.length - 1; n >= 0; n--) {
+
+	            	if(markerArr[n].markerId != e.get('target').markerId){
+	            		markerArr[n].options.set('iconImageHref', '/images/icons/marker-icon.svg')
+	   					// console.log(markerArr)
+	            	}
+	            }
+
+	        	
+	            e.get('target').options.set('iconImageHref', '/images/icons/marker-hover-icon.svg');
+
+	        })
+		    // При закрытии балуна маркер меняется 
+			marker.events.add('balloonclose', function(e) {
+				e.get('target').options.set('iconImageHref', '/images/icons/marker-icon.svg');
+			});
+		}
+
+	}
+
+	function init(){     
+	    
+	    $('body .ymap').each(function(index, el){
+
+			var myMap,
+				myCollection,
+				markerArr = [],
+				$mapId = $(el).attr('id'),
+	    		$mapCoords = $(el).data('coords'),
+	    		$mapUrl = $(el).attr('data-src');
+			   
+	    	// Инициализация карты START
+	        myMap = new ymaps.Map ($mapId, {
+	            center: $mapCoords,
+	            zoom: 12,
+	            controls: []
+	        });
+	    	// Инициализация карты END
+
+	    	myCollection = new ymaps.GeoObjectCollection();
+		
+			// Добавление или удаление элементов управления START
+			//add вместо remove
+			myMap.controls.remove('geolocationControl').remove('searchControl').remove('routeEditor').remove('trafficControl').remove('typeSelector').add('fullscreenControl').remove('rulerControl').add('zoomControl')
+			
+			// Добавление или удаление элементов управления END
+
+	        // Поведение карты
+	        myMap.behaviors
+		    .disable(['scrollZoom']) //отключает поведение
+		    .enable(['drag', 'dblClickZoom', 'multiTouch']); //включает поведение
+
+
+		    // Подгоним размер карты под новый размер контейнера
+			// (например, если изменилась верстка страницы или карта была инициализирована
+			// в скрытом состоянии)
+			myMap.container.fitToViewport();
+		        
+			$.ajax({
+		        url: $mapUrl,
+		        dataType: "json"
+		    }).done(function(data) {
+		        dataMap = data;
+		    	addMarkers(data, markerArr, myCollection, myMap);
+		    });
+
+    	});
+
+	}
+
+}

@@ -1,0 +1,70 @@
+//остальные функции форм
+//----------------------------------------------------------------------------------
+
+perem = new Array();
+num_multiblock = new Array();
+function add_multiblock(name_div,prefix_id,num,name_per,level)
+{
+	if(!num_multiblock[name_div])
+		num_multiblock[name_div]=new Array();
+	if(!num_multiblock[name_div][num])
+		num_multiblock[name_div][num]=0;
+	num_multiblock[name_div][num]++;
+	num_level=num_multiblock[name_div][num];
+
+	add_div=name_div+num_level;
+	x=perem[name_per];
+
+	new_x="<div class=\"delete_multi\" id=\"d_"+add_div+"\"><a href=\"javascript:void(0);\" onClick=\"delete_block('"+add_div+"');\"><img src=\"images/services/delete.gif\" /></a></div>";		
+	new_x+="<div id=\"c_"+add_div+"\" class=\"leftblock\">";
+	new_x+=replace_string(x,prefix_id+"0",prefix_id+num_level);
+	repl="/"+prefix_id+"[0-9]+/gi";
+	if(level<=0 && num_level>0)
+		new_x=replace_string(new_x,"[0]","["+num_level+"]");
+	else if(num>0)
+		new_x=replace_string(new_x,"[0]","["+num+"]");
+	new_x+="</div>";
+	new_x+="<div id=\""+name_div+(num_level+1)+"\" class=\"multi\"></div>";
+	document.getElementById(add_div).innerHTML=new_x;
+	if(document.getElementById(add_div).style.display=='none')
+		document.getElementById(add_div).style.display='block';
+}
+function replace_string(txt,cut_str,paste_str)
+{ 
+	var f=0;
+	var ht='';
+	ht = ht + txt;
+	f=ht.indexOf(cut_str);
+	while (f!=-1)
+	{ 
+		f=ht.indexOf(cut_str);
+		if (f>0)
+		{
+			ht = ht.substr(0,f) + paste_str + ht.substr(f+cut_str.length);
+		}
+	}
+	return ht;
+}
+function delete_block(val)
+{
+	obj=document.getElementById("c_"+val);
+	obj2=document.getElementById("d_"+val);
+	obj.style.display='none';
+	obj2.style.display='none';
+	obj.innerHTML='';
+	obj2.innerHTML='';
+}
+$(document).ready(function(){
+
+	$('.txt_date').parent().find('.icon_calend').click(function(){
+		$(this).parent().find('.txt_date').focus();
+	})
+
+	$('.txt_date').datepicker({
+		dateFormat: 'dd.mm.yy', 
+		monthNames: ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'], 
+		dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+		firstDay: 1,
+		currentText: $.datepicker.formatDate('dd.mm.yy', new Date())
+	});
+});

@@ -1,0 +1,837 @@
+/* ------------------------------------------------
+Clipboard START
+------------------------------------------------ */
+
+		function clipBoard(){
+    		if($('body .copy-link').length){
+    			// console.log(1)
+    			new ClipboardJS('body .copy-link');
+    			$('body .copy-link').on('click', function(e){
+    				if($(this).closest('.mfp-container').length){
+    					e.preventDefault();
+    					$(this).addClass('disabled');
+    				}
+    			})
+    		}
+		}
+		clipBoard();
+
+/* ------------------------------------------------
+Clipboard END
+------------------------------------------------ */
+
+
+
+
+function order_table(){
+
+		$('.filter_order_table').magnificPopup({
+			delegate: '.table_img',
+			type: 'image',
+			fixedContentPos: true,
+			// tLoading: 'Loading image #%curr%...',
+			// mainClass: 'mfp-img-mobile',
+			mainClass: 'mfp-zoom-in',
+    		removalDelay: 300, //delay removal by X to allow out-animation
+			closeOnBgClick: true,
+			closeBtnInside: true,
+
+    		gallery: {
+				enabled: true, 
+				navigateByImgClick: false,
+				// titleSrc: 'title',
+				tCounter: '<span>%curr% / %total%</span>'
+    		},
+    		
+    		image: {
+		        titleSrc: function(item) {
+		        	
+    	        	if(item.el.attr('data-old-summ')){
+    	        		if(item.el.attr('data-reserve')){
+    	        			var $slebName = item.el.parents('td').find('.table_img').data('name'),
+	    		        		$slebArticul = item.el.parents('td').find('.table_img').data('articul'),
+	    		        		$slebMetr = item.el.parents('td').find('.table_img').data('metr'),
+	    		        		$slebPhotoSrc = item.el.parents('td').find('.table_img').data('photosrc'),
+								$slebPhotoSrcD = item.el.parents('td').find('.table_img').data('photosrcd'),
+	    		        		$slebCopySrc = item.el.parents('td').find('.table_img').data('copy-src'),
+	    		        		$slebPrice = item.el.parents('td').find('.table_img').data('price'),
+								$slebPriceText = item.el.parents('td').find('.table_img').data('pricetext'),
+	    		        		$slebSumm = item.el.parents('td').find('.table_img').data('summ'),
+	    			        		$slebOldPrice = item.el.parents('td').find('.table_img').data('old-price'),
+	    			        		$slebOldSumm = item.el.parents('td').find('.table_img').data('old-summ'),
+	    			        		$slebPercent = item.el.parents('td').find('.table_img').data('percent'),
+	    			        		$slebPercentTime = item.el.parents('td').find('.table_img').data('percent-time'),
+	    			        	$slebProportion = item.el.parents('td').find('.table_img').data('proportion'),
+	    		        		$slebCheckedId = item.el.parents('td').find('.table_img').data('checked-id'),
+	    		        		$template = "<div class='popup_sleb_descr'>"+
+	    		        						"<span class='popup_sleb_name'>"+ $slebName +"</span>"+
+	    		        						"<span class='popup_sleb_articul'>"+ $slebArticul +"</span>"+
+	    		        						"<span class='popup_sleb_proportion'>"+ $slebProportion +"</span>"+
+	    		        						"<span class='popup_sleb_metr'><span>"+ $slebMetr +"</span> м<sup>2</sup></span>"+
+	    		        					"</div>"+
+	    		        					"<div class='popup_sleb_photo'>"+
+	    		        						"<a class='btn-radius btn-l btn-bd-white' href='"+ $slebPhotoSrcD +"' download>Скачать оригинал фото</a>"+
+	    		        						"<a class='copy-link btn-radius btn-l btn-bd-white' href='javascript:;' data-clipboard-target='#bar' data-text='Скопировать ссылку на слеб' data-text2='Ссылка скопирована'><div id='bar'>"+ $slebCopySrc +"</div></a>"+
+	    		        					"</div>"+
+											"<div class='popup_sleb_pricetext'>"+$slebPriceText+"</div>"+
+						        			"<div class='popup_sleb_price2'>"+$slebPrice+" ₽/м<sup>2</sup></div>"+
+	    		        					"<div class='popup_sleb_price-btn'>"+
+	    		        						"<div class='popup_sleb_discount'>"+
+	    		        							"<span class='old_price'>"+ $slebOldSumm +"₽</span>"+
+	    			        						"<span class='discount_flag'>"+
+	    			        						    "<span>-<span>"+ $slebPercent +"</span>%</span>"+
+	    			        						    "<span class='discount_time'>до <time>"+ $slebPercentTime +"</time>"+
+	    			        						    "</span>"+
+	    			        						"</span>"+
+	    			        					"</div>"+
+	    		        						"<div class='popup_sleb_price'>"+
+	    			        						"<span>"+ $slebSumm +"</span> ₽"+
+	    			        					"</div>"+
+	    			        					"<div class='reserve_label'><span>Резерв</span></div>"+
+	    		        					"</div>";
+	    		        		
+    	        		}
+    	        		else{
+    	        			var $slebName = item.el.parents('td').find('.table_img').data('name'),
+	    		        		$slebArticul = item.el.parents('td').find('.table_img').data('articul'),
+	    		        		$slebMetr = item.el.parents('td').find('.table_img').data('metr'),
+	    		        		$slebPhotoSrc = item.el.parents('td').find('.table_img').data('photosrc'),
+								$slebPhotoSrcD = item.el.parents('td').find('.table_img').data('photosrcd'),
+	    		        		$slebCopySrc = item.el.parents('td').find('.table_img').data('copy-src'),
+	    		        		$slebPrice = item.el.parents('td').find('.table_img').data('price'),
+								$slebPriceText = item.el.parents('td').find('.table_img').data('pricetext'),
+	    		        		$slebSumm = item.el.parents('td').find('.table_img').data('summ'),
+	    			        		$slebOldPrice = item.el.parents('td').find('.table_img').data('old-price'),
+	    			        		$slebOldSumm = item.el.parents('td').find('.table_img').data('old-summ'),
+	    			        		$slebPercent = item.el.parents('td').find('.table_img').data('percent'),
+	    			        		$slebPercentTime = item.el.parents('td').find('.table_img').data('percent-time'),
+	    			        	$slebProportion = item.el.parents('td').find('.table_img').data('proportion'),
+	    		        		$slebCheckedId = item.el.parents('td').find('.table_img').data('checked-id'),
+	    		        		$template = "<div class='popup_sleb_descr'>"+
+	    		        						"<span class='popup_sleb_name'>"+ $slebName +"</span>"+
+	    		        						"<span class='popup_sleb_articul'>"+ $slebArticul +"</span>"+
+	    		        						"<span class='popup_sleb_proportion'>"+ $slebProportion +"</span>"+
+	    		        						"<span class='popup_sleb_metr'><span>"+ $slebMetr +"</span> м<sup>2</sup></span>"+
+	    		        					"</div>"+
+	    		        					"<div class='popup_sleb_photo'>"+
+	    		        						"<a class='btn-radius btn-l btn-bd-white' href='"+ $slebPhotoSrcD +"' download>Скачать оригинал фото</a>"+
+	    		        						"<a class='copy-link btn-radius btn-l btn-bd-white' href='javascript:;' data-clipboard-target='#bar' data-text='Скопировать ссылку на слеб' data-text2='Ссылка скопирована'><div id='bar'>"+ $slebCopySrc +"</div></a>"+
+	    		        					"</div>"+
+											"<div class='popup_sleb_pricetext'>"+$slebPriceText+"</div>"+
+						        			"<div class='popup_sleb_price2'>"+$slebPrice+" ₽/м<sup>2</sup></div>"+
+	    		        					"<div class='popup_sleb_price-btn'>"+
+	    		        						"<div class='popup_sleb_discount'>"+
+	    		        							"<span class='old_price'>"+ $slebOldSumm +"₽</span>"+
+	    			        						"<span class='discount_flag'>"+
+	    			        						    "<span>-<span>"+ $slebPercent +"</span>%</span>"+
+	    			        						    "<span class='discount_time'>до <time>"+ $slebPercentTime +"</time>"+
+	    			        						    "</span>"+
+	    			        						"</span>"+
+	    			        					"</div>"+
+	    		        						"<div class='popup_sleb_price'>"+
+	    			        						"<span>"+ $slebSumm +"</span> ₽"+
+	    			        					"</div>"+
+	    			        					"<a class='btn-radius btn-l btn-orange js-validate4' href='javascript:;' data-checked-id='"+ $slebCheckedId +"' data-def-text='Добавить в корзину' data-text='Убрать из корзины'></a>"+
+	    		        					"</div>";
+	    		        		
+    	        		}
+    								
+    	        	}
+    	        	else{
+    	        		if(item.el.attr('data-reserve')){
+							var $slebName = item.el.parents('td').find('.table_img').data('name'),
+	    		        		$slebArticul = item.el.parents('td').find('.table_img').data('articul'),
+	    		        		$slebMetr = item.el.parents('td').find('.table_img').data('metr'),
+	    		        		$slebPhotoSrc = item.el.parents('td').find('.table_img').data('photosrc'),
+								$slebPhotoSrcD = item.el.parents('td').find('.table_img').data('photosrcd'),
+	    		        		$slebCopySrc = item.el.parents('td').find('.table_img').data('copy-src'),
+	    		        		$slebPrice = item.el.parents('td').find('.table_img').data('price'),
+								$slebPriceText = item.el.parents('td').find('.table_img').data('pricetext'),
+	    		        		$slebSumm = item.el.parents('td').find('.table_img').data('summ'),
+	    		        		$slebProportion = item.el.parents('td').find('.table_img').data('proportion'),
+	    		        		$slebCheckedId = item.el.parents('td').find('.table_img').data('checked-id'),
+	    		        		$template = "<div class='popup_sleb_descr'>"+
+	    		        						"<span class='popup_sleb_name'>"+ $slebName +"</span>"+
+	    		        						"<span class='popup_sleb_articul'>"+ $slebArticul +"</span>"+
+	    		        						"<span class='popup_sleb_proportion'>"+ $slebProportion +"</span>"+
+	    		        						"<span class='popup_sleb_metr'><span>"+ $slebMetr +"</span> м<sup>2</sup></span>"+
+	    		        					"</div>"+
+	    		        					"<div class='popup_sleb_photo'>"+
+	    		        						"<a class='btn-radius btn-l btn-bd-white' href='"+ $slebPhotoSrcD +"' download>Скачать оригинал фото</a>"+
+	    		        						"<a class='copy-link btn-radius btn-l btn-bd-white' href='javascript:;' data-clipboard-target='#bar' data-text='Скопировать ссылку на слеб' data-text2='Ссылка скопирована'><div id='bar'>"+ $slebCopySrc +"</div></a>"+
+	    		        					"</div>"+
+											"<div class='popup_sleb_pricetext'>"+$slebPriceText+"</div>"+
+						        			"<div class='popup_sleb_price2'>"+$slebPrice+" ₽/м<sup>2</sup></div>"+
+	    		        					"<div class='popup_sleb_price-btn'>"+
+	    		        						"<div class='popup_sleb_price'>"+
+	    			        						"<span>"+ $slebSumm +"</span> ₽"+
+	    			        					"</div>"+
+	    			        					"<div class='reserve_label'><span>Резерв</span></div>"+
+	    		        					"</div>";
+	    	        	
+    	        		}
+    	        		else{
+    	        			var $slebName = item.el.parents('td').find('.table_img').data('name'),
+	    		        		$slebArticul = item.el.parents('td').find('.table_img').data('articul'),
+	    		        		$slebMetr = item.el.parents('td').find('.table_img').data('metr'),
+	    		        		$slebPhotoSrc = item.el.parents('td').find('.table_img').data('photosrc'),
+								$slebPhotoSrcD = item.el.parents('td').find('.table_img').data('photosrcd'),
+	    		        		$slebCopySrc = item.el.parents('td').find('.table_img').data('copy-src'),
+	    		        		$slebPrice = item.el.parents('td').find('.table_img').data('price'),
+								$slebPriceText = item.el.parents('td').find('.table_img').data('pricetext'),
+	    		        		$slebSumm = item.el.parents('td').find('.table_img').data('summ'),
+	    		        		$slebProportion = item.el.parents('td').find('.table_img').data('proportion'),
+	    		        		$slebCheckedId = item.el.parents('td').find('.table_img').data('checked-id'),
+	    		        		$template = "<div class='popup_sleb_descr'>"+
+	    		        						"<span class='popup_sleb_name'>"+ $slebName +"</span>"+
+	    		        						"<span class='popup_sleb_articul'>"+ $slebArticul +"</span>"+
+	    		        						"<span class='popup_sleb_proportion'>"+ $slebProportion +"</span>"+
+	    		        						"<span class='popup_sleb_metr'><span>"+ $slebMetr +"</span> м<sup>2</sup></span>"+
+	    		        					"</div>"+
+	    		        					"<div class='popup_sleb_photo'>"+
+	    		        						"<a class='btn-radius btn-l btn-bd-white' href='"+ $slebPhotoSrcD +"' download>Скачать оригинал фото</a>"+
+	    		        						"<a class='copy-link btn-radius btn-l btn-bd-white' href='javascript:;' data-clipboard-target='#bar' data-text='Скопировать ссылку на слеб' data-text2='Ссылка скопирована'><div id='bar'>"+ $slebCopySrc +"</div></a>"+
+	    		        					"</div>"+
+											"<div class='popup_sleb_pricetext'>"+$slebPriceText+"</div>"+
+						        			"<div class='popup_sleb_price2'>"+$slebPrice+" ₽/м<sup>2</sup></div>"+
+	    		        					"<div class='popup_sleb_price-btn'>"+
+	    		        						"<div class='popup_sleb_price'>"+
+	    			        						"<span>"+ $slebSumm +"</span> ₽"+
+	    			        					"</div>"+
+	    			        					"<a class='btn-radius btn-l btn-orange js-add-basket' href='javascript:;' data-checked-id='"+ $slebCheckedId +"' data-def-text='Добавить в корзину' data-text='Убрать из корзины'></a>"+
+	    		        					"</div>";
+    	        	
+    	        		}
+    	        		
+    	        	}
+    		        
+    		        return $template;
+		        }
+		    },
+
+    		callbacks: {
+    		    open: function(item) {
+		    		var img = $(".mfp-figure>figure").find('img');
+		    		img.parent().prepend('<div class="mfp_img_box"></div>');
+		    		img.parent().find('.mfp_img_box').prepend(img);
+
+		    		//overwrite default prev + next function. Add timeout for css3 crossfade animation
+	                $.magnificPopup.instance.next = function() {
+	                    var self = this;
+	                    self.wrap.removeClass('mfp-image-loaded');
+	                    setTimeout(function() { $.magnificPopup.proto.next.call(self); }, 120);
+	                }
+	                $.magnificPopup.instance.prev = function() {
+	                    var self = this;
+	                    self.wrap.removeClass('mfp-image-loaded');
+	                    setTimeout(function() { $.magnificPopup.proto.prev.call(self); }, 120);
+	                }
+
+	                clipBoard();
+	                $(".mfp-gallery").swipe({
+						tap:function(event, target) {
+				          
+				        },
+						swipe:function(event, direction, distance, duration, fingerCount, fingerData) {
+							if(direction === 'left'){
+								$('body .mfp-gallery .mfp-arrow-right').trigger('click');
+							}
+							if(direction === 'right'){
+								$('body .mfp-gallery .mfp-arrow-left').trigger('click');
+							}
+							// console.log(event, direction, distance, duration, fingerCount, fingerData)
+						},
+					});
+					ym(54180595, 'reachGoal', 'slab_full_info');
+    		    },
+    		    imageLoadComplete: function() { 
+	                var self = this;
+	                setTimeout(function() { self.wrap.addClass('mfp-image-loaded'); }, 16);
+	            },
+	            change: function() {
+				    popupAddbasket();
+				    clipBoard();
+				},
+    		    elementParse: function(item) {
+    		        $('.mfp-counter').prependTo(".mfp-figure>figure .mfp_img_box");
+
+    		        popupAddbasket();
+    		        clipBoard();
+    		    },
+			    // markupParse: function(template, values, item) {
+			    //   // Triggers each time when content of popup changes
+			    //   var price = $(item.el).attr('data-price');
+
+			    //   console.log('Parsing:', $(template));
+			    //   setTimeout(function(){
+
+			    //   	$('body').find('.popup_sleb_price>span').text(price)
+			    //   },300)
+			  	// },
+
+    		}
+		});
+
+		function indexTr(){
+		    $('.filter_order_table tbody tr').each(function(index, el){
+		        $(el).attr("data-index", index);
+		    })              
+		}
+
+		function tableOpenPopup() {
+		    if($(window).width() >= 992){
+
+		        indexTr();
+		        $('.filter_order_table tbody tr').on("click touchstart", function(event) {
+		        	if(!$(this).closest('.filter_order_table.basket_table').length){
+			            if($(event.target).closest("td:first-child").length){return}
+			            var index = $(this).data('index');
+
+			            $('.filter_order_table').magnificPopup('open', index);
+			        }
+		        });
+		    }
+		}
+		tableOpenPopup();
+
+		// $('body').on('click', '.js-add-basket', function(){
+		// 	var $checkbox = $("#"+$(this).attr('data-checked-id'));
+			
+		// 	if($(this).hasClass('check')){
+		// 		$(this).removeClass('check');
+		// 		$checkbox.prop('checked', false).trigger('refresh');
+		// 	}
+		// 	else{
+		// 		$(this).addClass('check');
+		// 		$checkbox.prop('checked', true).trigger('refresh');
+		// 	}
+		// });
+
+        function popupAddbasket(){
+            setTimeout(function(){
+            	var $checkbox = $("#"+$('body').find('.js-add-basket').attr('data-checked-id'));
+
+	            if($('body').find($checkbox).prop('checked')){
+	            	$('body').find('.js-add-basket').addClass('check');
+	            }
+	            else{
+	            	$('body').find('.js-add-basket').removeClass('check');
+	            }
+            }, 500);
+        }
+
+}
+
+$(document).ready(function(){
+
+
+
+	/* ------------------------------------------------
+	TouchSwipe START
+	------------------------------------------------ */
+			// if($("body").length){
+
+				// $("body").swipe({
+				// 	tap:function(event, target) {
+			          
+			 //        },
+				// 	swipe:function(event, direction, distance, duration, fingerCount, fingerData) {
+				// 		if(direction === 'left'){
+				// 			$('body .mfp-gallery .mfp-arrow-right').trigger('click');
+				// 		}
+				// 		if(direction === 'right'){
+				// 			$('body .mfp-gallery .mfp-arrow-left').trigger('click');
+				// 		}
+				// 		// console.log(event, direction, distance, duration, fingerCount, fingerData)
+				// 	},
+				// });
+
+			// }
+
+	/* ------------------------------------------------
+	TouchSwipe END
+	------------------------------------------------ */
+
+
+	/* ------------------------------------------------
+	Validate START
+	------------------------------------------------ */
+
+			if($('.js-validate').length){
+				$('.js-validate').validate({
+
+					rules:{
+
+						// val_name: {
+						// 	required: true,
+						// 	minlength: 2
+						// },
+
+						val_email: {
+							required: true,
+							email: true
+						},
+
+						val_tel: {
+							required: true,
+							minlength: 10
+						},
+
+					},
+
+					messages:{
+
+						// val_name: {
+						// 	required: "Обязательно сообщите имя",
+						// 	minlength: 'Введите не менее 2 символов.'
+						// },
+
+						val_email: {
+							required: "Обязательно сообщите адрес",
+							email: "Не верный email."
+						},
+
+						val_tel: {
+							required: "Обязательно сообщите номер",
+							minlength: "Введите не менее 10 символов."
+						},
+
+					},
+					submitHandler: function(form) {
+						if($(form).valid() == true){
+							return start_fbq(form);
+						}
+					}
+
+				});	
+
+			}
+
+			if($('.js-validate2').length){
+				$('.js-validate2').validate({
+
+					rules:{
+
+						// val_name: {
+						// 	required: true,
+						// 	minlength: 2
+						// },
+
+						// val_comment: {
+						// 	required: true
+						// },
+
+						val_tel: {
+							required: true,
+							minlength: 10
+						},
+
+					},
+
+					messages:{
+
+						// val_name: {
+						// 	required: "Обязательно сообщите имя",
+						// 	minlength: 'Введите не менее 2 символов.'
+						// },
+
+						// val_comment: {
+						// 	required: "Обязательно напишите комментарий"
+						// },
+
+						val_tel: {
+							required: "Обязательно сообщите номер",
+							minlength: "Введите не менее 10 символов."
+						},
+
+					},
+
+					submitHandler: function(form) {
+						if($(form).valid() == true){
+							send_ajax('fast_order_form');
+						}
+					}
+
+				});	
+
+			}
+
+			if($('.js-validate3').length){
+
+				$('.js-validate3').validate({
+
+					rules:{
+
+						// val_name: {
+						// 	required: true,
+						// 	minlength: 2
+						// },
+
+						// val_comment: {
+						// 	required: true
+						// },
+
+						callback_phone: {
+							required: true,
+							minlength: 10
+						},
+
+					},
+
+					messages:{
+
+						// val_name: {
+						// 	required: "Обязательно сообщите имя",
+						// 	minlength: 'Введите не менее 2 символов.'
+						// },
+
+						// val_comment: {
+						// 	required: "Обязательно напишите комментарий"
+						// },
+
+						callback_phone: {
+							required: "Обязательно сообщите номер",
+							minlength: "Введите не менее 10 символов."
+						},
+
+					},
+
+					submitHandler: function(form) {
+						if($(form).valid() == true){
+							send_ajax('back_call_form');
+						}
+					}
+
+				});
+
+
+			}
+			if($('.js-validate4').length){
+
+				$('.js-validate4').validate({
+
+					rules:{
+						dist_phone: {
+							required: true,
+							minlength: 10
+						},
+
+					},
+
+					messages:{
+						dist_phone: {
+							required: "Обязательно сообщите номер",
+							minlength: "Введите не менее 10 символов."
+						},
+
+					},
+
+					submitHandler: function(form) {
+						if($(form).valid() == true){
+							send_ajax('distributor');
+						}
+					}
+
+				});
+
+
+			}
+
+			if($('.js-validate5').length){
+
+				$('.js-validate5').validate({
+
+					rules:{
+
+						// val_name: {
+						// 	required: true,
+						// 	minlength: 2
+						// },
+
+						val_email: {
+							required: true,
+							email: true
+						},
+
+						val_phone: {
+							required: true
+						},
+
+					},
+
+					messages:{
+
+						// val_name: {
+						// 	required: "Обязательно сообщите имя",
+						// 	minlength: 'Введите не менее 2 символов.'
+						// },
+
+						val_email: {
+							required: "Обязательно сообщите адрес",
+							email: "Не верный email."
+						},
+
+						val_phone: {
+							required: "Обязательно сообщите номер",
+						},
+
+					},
+
+					submitHandler: function(form) {
+						if($(form).valid() == true){
+							add_user();
+							return false;
+						}
+					}
+
+				});	
+
+
+			}
+
+	/* ------------------------------------------------
+	Validate END
+	------------------------------------------------ */
+
+
+
+
+	/* ------------------------------------------------
+	Autocomplete START
+	------------------------------------------------ */
+
+			if ($(".autocomplete").length){
+				var type_id = $('#type_id').val();
+				var options = {
+					url: function(phrase) {
+						return "/ajax.php?act=search_name&phrase=" + decodeURIComponent(phrase) + "&type=" + type_id;
+					},
+				  	getValue: "name",
+					template: {
+						type: "links",
+						fields: {
+							link: "website-link"
+						}
+					},
+					requestDelay: 500,
+					minCharNumber: 3,
+					list: {	
+					    maxNumberOfElements: 10,
+					    showAnimation: {
+			    			type: "fade", //normal|slide|fade
+			    			time: 400,
+			    			callback: function() {}
+			    		},
+
+			    		hideAnimation: {
+			    			type: "fade", //normal|slide|fade
+			    			time: 400,
+			    			callback: function() {}
+			    		},
+					    match: {
+					      	enabled: true
+					    },
+
+					}
+				};
+				$(".autocomplete").easyAutocomplete(options);
+
+				$(".autocomplete").on('focus', function(event) {
+					$(this).closest('.easy-autocomplete').next('.btn_search').addClass('focus');
+				});
+				
+				$(".autocomplete").on('blur', function(event) {
+					$(this).closest('.easy-autocomplete').next('button.btn_search').removeClass('focus');
+				});
+
+			}
+			
+			if ($(".autocomplete2").length){
+				var type_id = $('#type_id').val();
+				var options = {
+					url: function(phrase) {
+						return "/ajax.php?act=search_name&phrase=" + decodeURIComponent(phrase);
+					},
+				  	getValue: "name",
+					template: {
+						type: "links",
+						fields: {
+							link: "website-link"
+						}
+					},
+					requestDelay: 500,
+					minCharNumber: 3,
+
+					list: {	
+					  	maxNumberOfElements: 10,
+					    showAnimation: {
+			    			type: "fade", //normal|slide|fade
+			    			time: 400,
+			    			callback: function() {}
+			    		},
+
+			    		hideAnimation: {
+			    			type: "fade", //normal|slide|fade
+			    			time: 400,
+			    			callback: function() {}
+			    		},
+
+					    match: {
+					     	enabled: true
+					    },
+
+					}
+				};
+				$(".autocomplete2").easyAutocomplete(options);
+
+				$(".autocomplete2").on('focus', function(event) {
+					$(this).closest('.easy-autocomplete').next('.btn_search').addClass('focus');
+				});
+				
+				$(".autocomplete2").on('blur', function(event) {
+					$(this).closest('.easy-autocomplete').next('button.btn_search').removeClass('focus');
+				});
+
+			}
+
+	/* ------------------------------------------------
+	Autocomplete END
+	------------------------------------------------ */
+
+
+
+	/* ------------------------------------------------
+	Inputmask START
+	------------------------------------------------ */
+
+			if($('.mask, input[type="tel"]').length){
+
+				$('.mask, input[type="tel"]').inputmask({
+					"mask": "+7 (999) 999-9999",
+					'showMaskOnHover': false,
+					"clearIncomplete": true,
+					'oncomplete': function(){ 
+						// console.log('Ввод завершен'); 
+					}, 
+					'onincomplete': function(){ 
+						// console.log('Заполнено не до конца'); 
+					},
+					'oncleared': function(){ 
+						// console.log('Очищено'); 
+					}
+				});
+
+			}
+
+	/* ------------------------------------------------
+	Inputmask END
+	------------------------------------------------ */
+
+
+
+	/* ------------------------------------------------
+	MagnificPopup START
+	------------------------------------------------ */
+
+			if ($('.filter_order_table').length){
+				order_table();
+	        }
+
+            if ($('.js-modal').length){
+            	$('.js-modal').magnificPopup({
+    				type: 'inline',
+    				mainClass: 'mfp-zoom-in',
+            		removalDelay: 500,
+    				closeOnBgClick: true,
+        			closeBtnInside: true,
+        			callbacks: {
+    					open: function() {
+    						$('body').addClass('modalFormOpen');
+    					},
+    					close: function() {
+    						$('body').removeClass('modalFormOpen');
+    					}
+        			}
+            	});
+            }
+
+	/* ------------------------------------------------
+	MagnificPopup END
+	------------------------------------------------ */
+
+
+
+	/* ------------------------------------------------
+	FORMSTYLER START
+	------------------------------------------------ */
+
+			if ($('input[type="number"],input[type="checkbox"],input[type="radio"],select').length){
+				$('input[type="number"],input[type="checkbox"],input[type="radio"],select').styler({
+					selectSmartPositioning: true
+				});
+			}
+
+	/* ------------------------------------------------
+	FORMSTYLER END
+	------------------------------------------------ */
+
+
+
+
+	/* ------------------------------------------------
+	Owl START
+	------------------------------------------------ */
+
+			if($('.js-carousel').length){
+				var $carousel = $('.js-carousel');
+				$carousel.owlCarousel({
+				    loop:true,
+				    items: 1,
+				    nav:false
+				});
+				$('.tile-prev').on('click', function(){
+					$(this).closest('.tile_slider').find($carousel).trigger('prev.owl.carousel', [300]);
+				})
+				$('.tile-next').on('click', function(){
+					$(this).closest('.tile_slider').find($carousel).trigger('next.owl.carousel', [300]);
+				})
+			}
+			if($('.post_slider').length){
+				var $carousel = $('.post_slider');
+				$carousel.owlCarousel({
+					items: 1,
+					loop:true,
+					margin:100,
+					nav:false,
+					dots: false,
+					onInitialized: counter, //When the plugin has initialized.
+					onTranslated: counter, //When the translation of the stage has finished.
+				});
+				$('.tile-prev').on('click tap', function(){
+					$carousel.trigger('prev.owl.carousel', [300]);
+				})
+				$('.tile-next').on('click tap', function(){
+					$carousel.trigger('next.owl.carousel', [300]);
+				})
+			}
+			function counter(event) {
+
+				var element = event.target; // DOM element, in this example .owl-carousel
+				var items = event.item.count; // Number of items
+				var item = event.item.index + 1; // Position of the current item
+
+				// it loop is true then reset counter from 1
+				if (item > items) {
+					item = item - items
+				}
+				$('.slider_counter').html("<div class='current-slide'>" + item + "</div>" + "<div class='backslash'></div>" + "<div class='total-slide'>" + items + "</div>")
+			}
+	/* ------------------------------------------------
+	Owl END
+	------------------------------------------------ */
+
+
+});
+
+$(window).load(function() {});
+

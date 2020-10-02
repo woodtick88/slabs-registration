@@ -1,0 +1,601 @@
+var timer=0;
+
+$(document).ready(function(){
+	if ($('#item_params').length){
+		ajax_filtr();
+	}
+	$("#button_variants").on('click', function(){
+		$('#page_number').val(1);
+		ajax_catalog();
+		return false;
+	});
+	$('#item_params .link-m').on('click', function(){
+		$('#item_params').find('input[type=text]').attr('value','');
+		$('#item_params').find('input[type=checkbox]').removeAttr('checked');
+		ajax_filtr();
+	});
+	$('.filtr_order').on('click', function(){
+		$('#page_number').val(1);
+		ajax_catalog();
+	});
+	$(".sort_data_box").on('click',function(){
+		ajax_catalog();
+		ajax_filtr();
+	});
+	$("#item_params input, .form_checkbox label").on('keyup click',function(){
+		ajax_filtr_time();
+	});
+	$("#item_params select").on('change',function(){
+		ajax_filtr_time();
+	});
+	$("#sleb_params input").on('keyup click',function(){
+		ajax_slebs_time();
+	});
+	$("#sleb_params select").on('change',function(){
+		ajax_slebs_time();
+	});
+	$(".form_reset_btn").on('click',function(){
+		ajax_slebs();
+	});
+	$(".delete_sleb").on('click',function(){
+		var sleb=$(this).attr('data-id');
+		delete_sleb(sleb);
+	});
+	$(".q_order").on('click',function(){
+		var modul=$(this).attr('data-modul');
+		var elm_id=$(this).attr('data-id');
+		quickly_order(modul, elm_id);
+	});
+	$("#sign_dogovor").on('click',function(){
+		var order=$(this).attr('data-id');
+		var sign=$(this).attr('data-sign');
+		sign_dogovor(order,sign);
+	});
+	$(".tel_link").on('click',function(){
+		ym(54180595, 'reachGoal', 'clickphone');
+	});
+	$(".js-modal").on('click',function(){
+		ym(54180595, 'reachGoal', 'clickcallback');
+	});
+	$(".send_mail").on('click',function(){
+		ym(54180595, 'reachGoal', 'clickmail');
+	});	
+	$(".q_order").on('click',function(){
+		ym(54180595, 'reachGoal', 'quickorder');
+	});
+	$('.js-close_btn').on('click', function(){
+		close_registration_block();
+	});
+});
+function close_registration_block() {
+	var act='close_registration_block';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function()
+	{
+		if (req.readyState == 4) {
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {act:act} );
+}
+function sign_dogovor(orderid, sign)
+{
+	var act='sign_dogovor';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			if(req.responseText=='ok')
+			{
+				window.location.href=req.responseJS.url;
+			}
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {act:act, id:orderid, sign:sign} );
+}
+function ajax_filtr_time()
+{
+	if(timer)
+		clearTimeout(timer);
+	timer=window.setTimeout('ajax_filtr()',1000); 
+}
+function ajax_slebs_time()
+{
+	if(timer)
+		clearTimeout(timer);
+	timer=window.setTimeout('ajax_slebs()',1000); 
+}
+
+
+
+function ajax_filtr()
+{
+	$('#button_variants').addClass('is-load-btn');
+	param =  new Array();
+	var formid='item_params';
+	param= new Array();
+	if(document.getElementById(formid))
+	{
+		str = $("#"+formid).serialize();
+		lines = str.split("&");
+		for ( i = 0; i < lines.length; i++ ) 
+		{
+			data = lines[i].split("=");
+			param[data[0]]=data[1];
+		}
+	}
+	param['act']='ajax_filtr';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			if(req.responseText)
+			{
+				setTimeout(function() {
+//					alert(req.responseText);
+					$('#button_var').attr('style','display:block');
+					$('#button_variants').html(req.responseText);
+					$('#button_variants').removeClass('is-load-btn');
+				}, 150);
+			}
+			else
+			{
+				$('#button_var').attr('style','display:hidden');
+			}
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {param:param} );
+}
+function make_pages(page,act) {
+	$('#page_number').val(page);
+	$('.pagination_box a').attr('href','javascript:void(0);');
+	window['ajax_'+act]();
+//	ajax_catalog();
+	return false;
+}
+function all_pages() {
+	$('#pages_all').val('all');
+	$('.filter_pagination').remove();
+	ajax_catalog();
+	$('#content').append('<div class="dummy"></div>');
+	return false;
+}
+function all_pages_art() {
+	$('#pages_all').val('all');
+	$('.filter_pagination').remove();
+	ajax_articles();
+	$('#content').append('<div class="dummy"></div>');
+	return false;
+}
+function ajax_catalog()
+{
+	$('#list_catalog_wrapp').addClass('load_item');
+	param =  new Array();
+	var formid='item_params';
+	param= new Array();
+	if(document.getElementById(formid))
+	{
+		str = $("#"+formid).serialize();
+		lines = str.split("&");
+		for ( i = 0; i < lines.length; i++ ) 
+		{
+			data = lines[i].split("=");
+			param[data[0]]=data[1];
+		}
+	}
+	param['act']='ajax_catalog';
+	var order=Number($('input[name=filtr_order]:checked').val());
+	param['order']=order;
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			if(req.responseText)
+			{
+				$('#list_catalog').html(req.responseText);
+				$('.pagination_box').html(req.responseJS.pages_content);
+			}
+			$(".q_order").on('click',function(){
+				var modul=$(this).attr('data-modul');
+				var elm_id=$(this).attr('data-id');
+				quickly_order(modul, elm_id);
+			});
+		}
+		setTimeout(function(){
+			$('#list_catalog_wrapp').removeClass('load_item');
+		},1500)
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {param:param} );
+}
+function ajax_slebs()
+{
+	param =  new Array();
+	var formid='sleb_params';
+	param= new Array();
+	if(document.getElementById(formid))
+	{
+		str = $("#"+formid).serialize();
+		lines = str.split("&");
+		for ( i = 0; i < lines.length; i++ ) 
+		{
+			data = lines[i].split("=");
+			param[data[0]]=data[1];
+		}
+	}
+	param['act']='ajax_slebs';
+//	var order=Number($('input[name=filtr_order]:checked').val());
+//	param['order']=order;
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			if(req.responseText)
+			{
+				$('#list_slebs').html(req.responseText);
+				$('input[type="number"],input[type="checkbox"],input[type="radio"],select').styler({
+					selectSmartPositioning: true
+				});
+				tableCheck();
+//				order_table();
+//				start_filtrs();
+			}
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {param:param} );
+}
+function ajax_articles()
+{
+	$('#list_catalog_wrapp').addClass('load_item');
+	param =  new Array();
+	param['act']='ajax_articles';
+	var formid='item_params';
+	if(document.getElementById(formid))
+	{
+		str = $("#"+formid).serialize();
+		lines = str.split("&");
+		for ( i = 0; i < lines.length; i++ )
+		{
+			data = lines[i].split("=");
+			param[data[0]]=data[1];
+		}
+	}
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function()
+	{
+		if (req.readyState == 4) {
+			if(req.responseText)
+			{
+				$('#list_articles').html(req.responseText);
+				$('.pagination_box').html(req.responseJS.pages_content);
+			}
+		}
+		setTimeout(function(){
+			$('#list_catalog_wrapp').removeClass('load_item');
+		},1500)
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {param:param} );
+}
+function send_ajax(formid)
+{
+	param= new Array();
+	if(document.getElementById(formid))
+	{
+		str = $("#"+formid).serialize();
+		lines = str.split("&");
+		for ( i = 0; i < lines.length; i++ ) 
+		{
+			data = lines[i].split("=");
+			param[data[0]]=data[1];
+		}
+	}
+	param['formid']=formid;
+	param['act']='send_form';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			if(req.responseText=='ok')
+			{
+				if(formid=='back_call_form') {
+					ym(54180595, 'reachGoal', 'callbacksent');
+				}
+				else if(formid=='fast_order_form') {
+					ym(54180595, 'reachGoal', 'quickordersent');
+				}
+				if ($('#modal_thanks').length) {
+					if(req.responseJS.ajax_error)
+						$('#modal_thanks').html(req.responseJS.ajax_error);					
+					$.magnificPopup.open({
+						items: {
+							src: '#modal_thanks' 
+						},
+						type: 'inline'
+					});
+				}
+			}
+			else
+			{
+				if(req.responseJS.ajax_error)
+				{
+					$('#'+formid+'-fail').html(req.responseJS.ajax_error);
+				}
+				$('#'+formid+'-fail').attr('style','display:block');
+			}
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {param:param} );
+	return false;
+}
+function delete_sleb(sleb)
+{
+	var act='delete_sleb';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			//изменение мини-корзины
+			$('.basket_info').html(req.responseText);
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {act:act, sleb:sleb} );
+}
+function add_sleb(sleb)
+{
+	var act='add_sleb';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			fbq('track', 'AddToCart', {
+				content_name: req.responseJS.slab_name, //Название контента
+				content_category: req.responseJS.slab_type, //[Тип камня]
+				content_ids: sleb,   //Уникальный идентификатор
+				content_type: 'product',   //Тип контента (например, страница товара)
+				value: req.responseJS.slab_price,               //Стоимость конверсии
+				currency: 'RUB'            //Валюта
+			});
+			//изменение мини-корзины
+			$('.basket_info').html(req.responseText);
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {act:act, sleb:sleb} );
+}
+function quickly_order(modul, elm)
+{
+	var act='quickly_order';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			if(req.responseText && $('#modal_form').length)
+			{
+				$('#modal_whats').html(req.responseText);		
+			
+				$('#val_product').val(req.responseJS.val_product);
+				$.magnificPopup.open({
+					items: {
+						src: '#modal_form' 
+					},
+					type: 'inline'
+				});
+			}
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {act:act, modul:modul, elm:elm} );
+	return false;
+}
+function add_subscriber()
+{
+	param =  new Array();
+	var formid='subscribe_form';
+	param= new Array();
+	if(document.getElementById(formid))
+	{
+		str = $("#"+formid).serialize();
+		lines = str.split("&");
+		for ( i = 0; i < lines.length; i++ )
+		{
+			data = lines[i].split("=");
+			param[data[0]]=data[1];
+		}
+	}
+	param['act']='add_subscriber';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function()
+	{
+		if (req.readyState == 4) {
+			if(req.responseText)
+			{
+				$('#subscribe_modal').html(req.responseText);
+				$.magnificPopup.open({
+					items: {
+						src: '#subscribe_modal'
+					},
+					type: 'inline'
+				});
+			}
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {param:param} );
+	return false;
+}
+function add_user()
+{
+	param =  new Array();
+	var formid='register_form';
+	param= new Array();
+	if(document.getElementById(formid))
+	{
+		str = $("#"+formid).serialize();
+		lines = str.split("&");
+		for ( i = 0; i < lines.length; i++ )
+		{
+			data = lines[i].split("=");
+			param[data[0]]=data[1];
+		}
+	}
+	param['act']='add_user';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function()
+	{
+		if (req.readyState == 4) {
+			if(req.responseText)
+			{
+				if(Number(req.responseJS.error)==1) {
+					$('#register_form_errors').html(req.responseText);
+				}
+				else {
+//					$.magnificPopup.close();
+					$('#modal_thanks').html('<div class="modal_form_wrap mb20"><p class="mb20">'+req.responseText+'</p></div>');
+					$.magnificPopup.open({
+						items: {
+							src: '#modal_thanks'
+						},
+						type: 'inline'
+					});
+				}
+			}
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {param:param} );
+	return false;
+}
+function fast_order_form_validate()
+{
+	
+}
+function alertObj(obj) {
+	var str = "";
+	for(k in obj) {
+		str += k+": "+ obj[k]+"\r\n";
+	}
+	alert(str);
+}
+function start_fbq(form) {
+	var act='start_fbq';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function()
+	{
+		if (req.readyState == 4) {
+			var data = JSON.parse(req.responseJS.cont);
+			fbq('track', 'Purchase', {
+				value: req.responseJS.summ, //общая стоимость товаров в корзине
+				currency: 'RUB',
+				content_type: 'product',
+				contents: data
+			});
+			form.submit();
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {act:act} );
+	return false;
+}
+Share = {
+	vkontakte: function(purl, ptitle, pimg, text) {
+		url  = 'http://vkontakte.ru/share.php?';
+		url += 'url='          + encodeURIComponent(purl);
+		url += '&title='       + encodeURIComponent(ptitle);
+		url += '&description=' + encodeURIComponent(text);
+		url += '&image='       + encodeURIComponent(pimg);
+		url += '&noparse=true';
+		Share.popup(url);
+	},
+	odnoklassniki: function(purl, ptitle, text, pimg) {
+		url  = 'https://connect.ok.ru/offer?';
+		url += 'url='		   + encodeURIComponent(purl);
+		url += '&title='       + encodeURIComponent(ptitle);
+		url += '&description=' + encodeURIComponent(text);
+		url += '&imageUrl='    + encodeURIComponent(pimg);
+		Share.popup(url);
+	},
+	facebook: function(purl, ptitle, pimg, text) {
+		url  = 'http://www.facebook.com/sharer.php?src=sp';
+		url += '&u='       + encodeURIComponent(purl);
+		url += '&t='     + encodeURIComponent(ptitle);
+		url += '&description='   + encodeURIComponent(text);
+		url += '&picture=' + encodeURIComponent(pimg);
+		Share.popup(url);
+	},
+	twitter: function(purl, ptitle) {
+		url  = 'http://twitter.com/share?';
+		url += 'text='      + encodeURIComponent(ptitle);
+		url += '&url='      + encodeURIComponent(purl);
+		url += '&counturl=' + encodeURIComponent(purl);
+		Share.popup(url);
+	},
+	mailru: function(purl, ptitle, pimg, text) {
+		url  = 'http://connect.mail.ru/share?';
+		url += 'url='          + encodeURIComponent(purl);
+		url += '&title='       + encodeURIComponent(ptitle);
+		url += '&description=' + encodeURIComponent(text);
+		url += '&imageurl='    + encodeURIComponent(pimg);
+		Share.popup(url)
+	},
+	popup: function(url) {
+		window.open(url,'','toolbar=0,status=0,width=626,height=436');
+	}
+};
